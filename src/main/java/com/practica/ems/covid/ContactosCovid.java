@@ -1,9 +1,7 @@
 package com.practica.ems.covid;
 
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -157,6 +155,12 @@ public class ContactosCovid {
 			}
 		}
 	}
+
+	/*----------------------*/
+
+
+
+/*----------------------------------------------------------------------------*/
 	public int findPersona(String documento) throws EmsPersonNotFoundException {
 		int pos;
 		try {
@@ -253,7 +257,7 @@ public class ContactosCovid {
 		return persona;
 	}
 
-	private PosicionPersona crearPosicionPersona(String[] data) {
+	private PosicionPersona crearPosicionPersona5(String[] data) {
 		PosicionPersona posicionPersona = new PosicionPersona();
 		String fecha = null, hora;
 		float latitud = 0, longitud;
@@ -281,7 +285,38 @@ public class ContactosCovid {
 		}
 		return posicionPersona;
 	}
-	
+
+	private PosicionPersona crearPosicionPersona(String[] data) {
+		PosicionPersona posicionPersona = new PosicionPersona();
+		String fecha = null, hora;
+		float latitud = 0, longitud;
+		for (int i = 1; i < Constantes.MAX_DATOS_LOCALIZACION; i++) {
+			String s = data[i];
+			switch (i) {
+				case 1:
+					posicionPersona.setDocumento(s);
+					break;
+				case 2:
+					fecha = data[i];
+					break;
+				case 3:
+					hora = data[i];
+					posicionPersona.setFechaPosicion(parsearFecha(fecha, hora));
+					break;
+				case 4:
+				case 5:
+					if (i == 4) {
+						latitud = Float.parseFloat(s);
+					} else {
+						longitud = Float.parseFloat(s);
+						posicionPersona.setCoordenada(new Coordenada(latitud, longitud));
+					}
+					break;
+			}
+		}
+		return posicionPersona;
+	}
+
 	private FechaHora parsearFecha (String fecha) {
 		int dia, mes, anio;
 		String[] valores = fecha.split("\\/");
